@@ -17,9 +17,8 @@
 .rel-name{font-size:19px;font-weight:800;margin-top:2px}
 .rel-name small{font-size:12px;font-weight:500;color:var(--ink3);margin-left:6px}
 .rel-p{margin-top:10px;font-size:14px;line-height:1.9;color:#4a423a;text-align:justify}
-.rel-f,.rel-s{margin-top:8px;font-size:13px;line-height:1.8;padding:10px 12px;border-radius:12px}
-.rel-f{background:var(--panel);color:#4a423a}
-.rel-f b,.rel-s b{display:block;font-size:11px;letter-spacing:.14em;margin-bottom:2px;color:var(--ink3);font-weight:600}
+.rel-s{margin-top:8px;font-size:13px;line-height:1.8;padding:10px 12px;border-radius:12px}
+.rel-s b{display:block;font-size:11px;letter-spacing:.14em;margin-bottom:2px;color:var(--ink3);font-weight:600}
 .rel-s{background:linear-gradient(135deg,rgba(255,255,255,.7),rgba(255,255,255,.2));border:1px dashed var(--hue);font-weight:600}
 .rel.love{border-color:#E9B8B0}
 .rel.love .rel-kind{color:#C9736A}
@@ -64,3 +63,10 @@ button.res-dog{background:none;border:0;padding:0;font:inherit;color:inherit;dis
 .pose-dots i{width:7px;height:7px;border-radius:50%;background:var(--ink3);opacity:.35;transition:opacity .2s,transform .2s}
 .pose-dots i.on{opacity:1;transform:scale(1.25);background:var(--ink)}
 .res-dog.swap .dog-img{animation:pop .45s cubic-bezier(.3,1.6,.5,1)}
+
+.meme-box{margin:14px 0 4px;padding:14px 14px 10px;border-radius:16px;background:var(--panel);text-align:left}
+.meme-title{font-size:15px;font-weight:700;margin-bottom:6px;color:var(--ink)}
+.meme{padding:8px 0;border-top:1px dashed rgba(0,0,0,.12);font-size:13px;line-height:1.75;color:#4a423a}
+.meme:first-child{border-top:0}
+.meme b{display:block;font-size:14px;color:var(--ink)}
+.meme-note{margin-top:6px;font-size:11px;color:var(--ink3)}

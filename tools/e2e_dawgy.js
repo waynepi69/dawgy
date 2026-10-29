@@ -18,7 +18,7 @@ async function takeQuiz(p,key){
   await p.click('#startBtn');
   const picks=await p.evaluate(k=>{const D=window.__dawgy;return D.QUIZ.map(q=>{let best=0,bd=9;q.o.forEach(([t,s],i)=>{const d=Math.abs(s-2*D.DOGS[k].p[D.DIMS.findIndex(x=>x.k===q.d)]);if(d<bd){bd=d;best=i;}});return best;});},key);
   for(let i=0;i<24;i++){await p.waitForSelector('.opt');
-    const cnt=await p.$$eval('.opt',o=>o.length);ok(cnt===3||cnt===4,'opts count '+cnt);
+    const cnt=await p.$$eval('.opt',o=>o.length);ok(cnt===4,'opts count '+cnt);
     const lab=await p.$eval('#progText',e=>e.textContent);ok(lab.startsWith((i+1)+' /'),'prog '+lab);
     await p.evaluate(n=>document.querySelector('.opt[data-i="'+n+'"]').click(),picks[i]);
     await new Promise(r=>setTimeout(r,340));}
@@ -36,9 +36,11 @@ for(const k of keys){
     imgOk:document.querySelector('#resDog img').naturalWidth>0,
     rp:[...document.querySelectorAll('.rel-p')].map(e=>e.textContent.length),
     rs:[...document.querySelectorAll('.rel-s span')].map(e=>e.textContent.length),
-    rf:[...document.querySelectorAll('.rel-f span')].map(e=>e.textContent.length)}));
+    nf:document.querySelectorAll('.rel-f').length,txt:document.body.innerText.includes('小情景'),
+    memes:[...document.querySelectorAll('#memeList .meme')].map(e=>e.textContent.length)}));
   ok(n.rel===3&&n.bars===8&&n.imgOk,k+' structure '+JSON.stringify(n));
-  ok(n.rp.every(x=>x>60)&&n.rs.every(x=>x>5)&&n.rf.every(x=>x>20),k+' rel text '+JSON.stringify(n));
+  ok(n.rp.every(x=>x>60)&&n.rs.every(x=>x>5)&&n.nf===0&&!n.txt,k+' rel text '+JSON.stringify(n));
+  ok(n.memes.length>=2&&n.memes.length<=3&&n.memes.every(x=>x>20),k+' memes '+JSON.stringify(n.memes));
   await new Promise(r=>setTimeout(r,500));
   // 姿势：3 张图都能加载，点主图循环 0→1→2，文案跟着变，没有 GIF 区块
   const ps=await p.evaluate(async()=>{

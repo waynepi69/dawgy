@@ -38,7 +38,7 @@ function shuffled(n){const a=[...Array(n).keys()];for(let i=n-1;i>0;i--){const j
 function newOrder(){return QUIZ.map(q=>shuffled(q.o.length));}   // 每题选项顺序随机，避免“总选第一个/最后一个”造成位置偏差
 
 /* ---------- 图片：base64 只解码一次，之后全部用 blob URL ---------- */
-const SRC={},NP=3;   // 每只狗 3 个姿势：0 站 · 1 坐/趴 · 2 小情景
+const SRC={},NP=3;   // 每只狗 3 个姿势：0 站 · 1 坐/趴 · 2 动作姿势
 KEYS.forEach(k=>{
   SRC[k]=IMG[k].map(u=>{
     try{const bin=atob(u.split(",")[1]),a=new Uint8Array(bin.length);for(let i=0;i<bin.length;i++)a[i]=bin.charCodeAt(i);return URL.createObjectURL(new Blob([a],{type:"image/webp"}));}
@@ -162,10 +162,10 @@ function relCard(kind,cls,r){
   const o=DOGS[r.k];
   return `<div class="rel ${cls}"><button type="button" class="rel-head" data-k="${r.k}" aria-label="看看${o.n}的结果"><span class="mini">${dogImg(r.k,"","",1)}</span>
     <span class="rel-txt"><span class="rel-kind">${kind}</span><span class="rel-name">${o.n}<small>${o.t.split(" · ")[0]}</small></span></span></button>
-    <div class="rel-p"></div><div class="rel-f"><b>🎬 小情景</b><span></span></div><div class="rel-s"><b>💬 ta 想对你说</b><span></span></div></div>`;
+    <div class="rel-p"></div><div class="rel-s"><b>💬 ta 想对你说</b><span></span></div></div>`;
 }
 
-/* ---------- 结果页主图：3 个姿势，点一下换（默认先看小情景） ---------- */
+/* ---------- 结果页主图：3 个姿势，点一下换（默认先看第三个姿势） ---------- */
 let heroPose=2;
 function setHero(p,anim){
   const key=view.k,b=DOGS[key];heroPose=p;view.pose=p;
@@ -198,9 +198,12 @@ function showResult(vw){
   const R=REL[key];
   $("#relBox").innerHTML=relCard("🐾 最佳狗友","",R.friend)+relCard("💕 最佳情侣","love",R.lover)+relCard("⚡ 欢喜冤家","",R.foe);
   [R.friend,R.lover,R.foe].forEach((r,i)=>{const el=$("#relBox").children[i];
-    el.querySelector(".rel-p").textContent=r.p;el.querySelector(".rel-f span").textContent=r.f;el.querySelector(".rel-s span").textContent=r.s;
+    el.querySelector(".rel-p").textContent=r.p;el.querySelector(".rel-s span").textContent=r.s;
     el.querySelector(".rel-head").onclick=()=>go("d="+r.k);});
-  $("#resFact").textContent=b.fact;$("#resWarm").textContent=b.w;
+  $("#resFact").textContent=b.fact;
+  $("#memeList").innerHTML=(MEMES[key]||[]).map(m=>`<div class="meme"><b></b><span></span></div>`).join("");
+  [...$("#memeList").children].forEach((el,i)=>{el.querySelector("b").textContent="「"+MEMES[key][i][0]+"」";el.querySelector("span").textContent=MEMES[key][i][1];});
+  $("#resWarm").textContent=b.w;
   // 顶部提示条：只在“别人的 / 图鉴里的”狗上出现，并给一个回到我的结果的入口
   const hasMine=!!(mine||(mine=loadMine()));
   const fb=$("#friendBanner");
