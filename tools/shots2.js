@@ -1,0 +1,10 @@
+const puppeteer=require('puppeteer-core');
+(async()=>{const br=await puppeteer.launch({executablePath:'/usr/bin/google-chrome',args:['--no-sandbox'],headless:'new'});
+const p=await br.newPage();await p.setViewport({width:390,height:844,deviceScaleFactor:2});
+await p.goto('file:///workspace/dawgy/index.html#d=corgi');await new Promise(r=>setTimeout(r,1500));
+await p.screenshot({path:'/workspace/dawgy/dogview.png'});
+await p.evaluate(()=>document.querySelector('#resDog').click());await new Promise(r=>setTimeout(r,700));
+await p.screenshot({path:'/tmp/dogview_pose.png'});
+const el=await p.$('.chart-box');await el.scrollIntoView();await new Promise(r=>setTimeout(r,1200));
+await el.screenshot({path:'/workspace/dawgy/dims.png'});
+await br.close();})();

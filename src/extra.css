@@ -1,0 +1,66 @@
+/* ---- dawgy: 图片版 ---- */
+.dog-img{display:block;width:100%;height:100%;object-fit:contain;user-select:none;-webkit-user-drag:none;transform-origin:50% 92%;animation:breathe 3.4s ease-in-out infinite}
+.stage .dog-img{position:relative}
+.stage.pop .dog-img{animation:pop .5s cubic-bezier(.3,1.6,.5,1)}
+.res-dog .dog-img{animation:pop .7s cubic-bezier(.3,1.6,.5,1),breathe 3.4s ease-in-out .8s infinite}
+.mini .dog-img,.g-card .dog-img,.walker .dog-img{animation:none}
+.walker .dog-img{position:absolute;top:0;width:34px;height:30px;transition:left .4s cubic-bezier(.16,1,.3,1);transform:translateX(-50%)}
+.g-card .art{display:flex;align-items:center;justify-content:center;padding:8px}
+@keyframes breathe{0%,100%{transform:scale(1,1) translateY(0)}50%{transform:scale(1.025,1.045) translateY(-2px)}}
+/* 关系卡片 */
+.rel-title{margin-top:26px;font-size:15px;font-weight:800}
+.rel-sub{font-size:12px;color:var(--ink3);margin-top:2px}
+.rel{margin-top:12px;background:var(--bg);border:1px solid var(--border);border-radius:18px;padding:14px 14px 12px}
+.rel-head{display:flex;align-items:center;gap:12px;cursor:pointer}
+.rel-head .mini{width:62px;height:62px;flex:0 0 auto;background:var(--panel);border-radius:50%;overflow:hidden;padding:4px;display:flex;align-items:center;justify-content:center}
+.rel-kind{font-size:12px;color:var(--ink3);letter-spacing:.14em}
+.rel-name{font-size:19px;font-weight:800;margin-top:2px}
+.rel-name small{font-size:12px;font-weight:500;color:var(--ink3);margin-left:6px}
+.rel-p{margin-top:10px;font-size:14px;line-height:1.9;color:#4a423a;text-align:justify}
+.rel-f,.rel-s{margin-top:8px;font-size:13px;line-height:1.8;padding:10px 12px;border-radius:12px}
+.rel-f{background:var(--panel);color:#4a423a}
+.rel-f b,.rel-s b{display:block;font-size:11px;letter-spacing:.14em;margin-bottom:2px;color:var(--ink3);font-weight:600}
+.rel-s{background:linear-gradient(135deg,rgba(255,255,255,.7),rgba(255,255,255,.2));border:1px dashed var(--hue);font-weight:600}
+.rel.love{border-color:#E9B8B0}
+.rel.love .rel-kind{color:#C9736A}
+.dim.compact{margin-bottom:11px}
+
+/* ---- 评审修复：a11y / 状态 / 交互 ---- */
+[hidden]{display:none!important}
+button{font-family:inherit}
+:focus-visible{outline:3px solid #2B2622;outline-offset:2px}
+[tabindex="-1"]:focus{outline:none}
+button.stage{background:none;border:0;padding:0;font:inherit;color:inherit;display:block}
+.screen:not(.active) *{animation-play-state:paused!important}
+.friend-banner.show{display:flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:6px 10px}
+.friend-banner.show+.res-hero{padding-top:26px}
+.link-btn{appearance:none;border:0;background:none;color:var(--ink);font:inherit;font-weight:700;text-decoration:underline;cursor:pointer;padding:4px 2px}
+.btn.small{padding:10px 20px;font-size:14px}
+.cover-last{margin-top:10px}
+.cover-count{max-width:300px;line-height:1.6}
+.disclaimer{margin-top:14px;font-size:12px;line-height:1.7;color:var(--ink3);text-align:center}
+/* 八维：名称 + 通俗解释 + 百分比 */
+.dim-head{display:flex;align-items:baseline;gap:8px;margin-bottom:5px}
+.dim-head b{font-size:14px;font-weight:700;color:var(--ink);flex:0 0 auto}
+.dim-head .dim-x{flex:1;font-size:12px;color:var(--ink2);min-width:0}
+.dim-head em{font-style:normal;font-size:13px;font-weight:700;color:var(--ink);flex:0 0 auto}
+.dim-ends{display:flex;justify-content:space-between;font-size:11px;color:var(--ink2);margin-top:4px}
+/* 图鉴 */
+button.g-card{appearance:none;font:inherit;color:inherit;width:100%}
+.g-card .g-name,.g-card .g-tag{display:block}
+.legend{margin:20px 2px 4px;padding:14px 16px;background:var(--bg);border:1px solid var(--border);border-radius:16px;font-size:13px;line-height:1.9;color:var(--ink2)}
+.legend b{display:block;color:var(--ink);margin-bottom:4px;font-size:14px}
+.legend span{color:var(--ink);font-weight:700}
+/* 关系卡 */
+button.rel-head{appearance:none;background:none;border:0;padding:0;width:100%;text-align:left;font:inherit;color:inherit}
+.rel-head .rel-txt{display:block}
+.rel-head .rel-kind,.rel-head .rel-name{display:block}
+.btn.busy{opacity:.55;pointer-events:none}
+
+/* 结果页姿势切换 */
+button.res-dog{background:none;border:0;padding:0;font:inherit;color:inherit;display:block;cursor:pointer}
+.pose-cap{margin:6px auto 0;max-width:300px;min-height:22px;font-size:14px;font-weight:600;line-height:1.5;color:var(--ink)}
+.pose-dots{display:flex;gap:8px;justify-content:center;margin:6px 0 2px}
+.pose-dots i{width:7px;height:7px;border-radius:50%;background:var(--ink3);opacity:.35;transition:opacity .2s,transform .2s}
+.pose-dots i.on{opacity:1;transform:scale(1.25);background:var(--ink)}
+.res-dog.swap .dog-img{animation:pop .45s cubic-bezier(.3,1.6,.5,1)}

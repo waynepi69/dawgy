@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#F6F1E7">
+<title>dawgy · 测测你是什么小狗</title>
+<meta name="description" content="24 道题、8 个维度，测出你是柴犬、哈士奇还是金毛。纯前端、离线可用。趣味测试，仅供娱乐。">
+<meta property="og:type" content="website">
+<meta property="og:title" content="dawgy · 测测你是什么小狗">
+<meta property="og:description" content="24 道题、8 个维度、12 种小狗。趣味测试，仅供娱乐。">
+<style>
+/*BASECSS*/
+/*EXTRACSS*/
+@keyframes pop{0%{transform:scale(.6) rotate(-8deg);opacity:0}100%{transform:scale(1) rotate(0);opacity:1}}
+@keyframes rise{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
+@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}.screen{transition:none}}
+</style>
+</head>
+<body>
+<div class="phone">
+  <div id="app">
+    <section class="screen active" id="cover">
+      <div class="wordmark" id="coverTitle" tabindex="-1">daw<i>gy</i></div>
+      <p class="cover-sub">测测你是什么小狗 🐾</p>
+      <div class="cover-kicker">WHICH DAWGY ARE YOU</div>
+      <button type="button" class="stage" id="coverDog" aria-label="换一只狗" title="戳一下换只狗"></button>
+      <div class="tapme" id="coverName" aria-live="polite">戳戳它，换只狗</div>
+      <div style="height:18px"></div>
+      <button type="button" class="btn" id="startBtn">开始测试</button>
+      <button type="button" class="btn ghost small cover-last" id="lastBtn" hidden>查看上次结果</button>
+      <div class="hint">24 道题 · 8 个维度 · 约 3 分钟 · 12 种小狗</div>
+      <div class="cover-count" id="coverCount">趣味测试，仅供娱乐，不是心理学测评。<br>纯本地运行，答案不会上传。</div>
+    </section>
+
+    <section class="screen" id="quiz">
+      <div class="topbar">
+        <button type="button" class="prev-btn" id="prevBtn" aria-label="上一题">←</button>
+        <span class="prog" id="progText">1 / 24</span>
+        <span class="prog" style="color:var(--ink3)">dawgy</span>
+      </div>
+      <div class="bar" id="bar" role="progressbar" aria-label="答题进度" aria-valuemin="1" aria-valuemax="24" aria-valuenow="1"><i id="barFill"></i></div>
+      <div class="walker" id="walker" aria-hidden="true"></div>
+      <div class="q-card">
+        <div class="q-label" id="qLabel"></div>
+        <div class="q-title" id="qTitle" tabindex="-1"></div>
+      </div>
+      <div class="opts" id="opts" role="group" aria-labelledby="qTitle"></div>
+    </section>
+
+    <section class="screen" id="result">
+      <div class="friend-banner" id="friendBanner"><span id="bannerText"></span><button type="button" class="link-btn" id="toMine" hidden>回到我的结果</button></div>
+      <div class="res-hero" id="banner">
+        <button type="button" class="res-dog" id="resDog" aria-label="换个姿势看看"></button>
+        <div class="pose-cap" id="poseCap" aria-live="polite"></div>
+        <div class="pose-dots" id="poseDots" aria-hidden="true"></div>
+        <div class="res-label" id="resLabel">你的狗狗人格是</div>
+        <h1 class="res-name" id="resName" tabindex="-1" style="margin:6px 0 0"></h1>
+        <div class="res-en" id="resEn"></div>
+        <div class="res-title" id="resTitle"></div>
+      </div>
+      <div class="res-body">
+        <div class="quote" id="resQuote"></div>
+        <div class="tags" id="resTags"></div>
+        <div class="res-desc" id="resDesc"></div>
+        <div class="sub-dog" id="subDog"></div>
+        <div class="chart-box">
+          <div class="chart-title" id="chartTitle">你的狗狗八维</div>
+          <div id="chart"></div>
+        </div>
+        <div class="rel-title" id="relTitle">你的狗狗关系图</div>
+        <div class="rel-sub">点头像可以去看 ta 的结果</div>
+        <div id="relBox"></div>
+        <div class="fact" id="resFact"></div>
+        <div class="warm" id="resWarm"></div>
+        <div class="disclaimer">趣味测试，仅供娱乐，非科学 / 心理学测评。<br>百分比只代表你的选项倾向，不是对你的评判。</div>
+      </div>
+      <div class="actions">
+        <div class="action-row">
+          <button type="button" class="btn ghost" id="againBtn">再测一次</button>
+          <button type="button" class="btn ghost" id="galleryBtn">狗狗图鉴</button>
+        </div>
+        <div class="action-row">
+          <button type="button" class="btn ghost" id="posterBtn">保存海报</button>
+          <button type="button" class="btn" id="shareBtn">分享给朋友</button>
+        </div>
+      </div>
+      <div class="share-note" id="shareNote">分享链接会带上你的结果，朋友点开就能看</div>
+    </section>
+
+    <section class="screen" id="gallery">
+      <div class="g-head"><button type="button" class="g-back" id="galleryBack">← 返回</button><h1 class="g-title" id="galleryTitle" tabindex="-1" style="margin:0">狗狗图鉴 · 12 种</h1></div>
+      <div class="g-list" id="galleryList"></div>
+      <div class="legend" id="legend"></div>
+    </section>
+
+    <div class="modal" id="modal" role="dialog" aria-modal="true" aria-label="结果海报">
+      <img id="posterImg" alt="结果海报">
+      <p>长按图片保存，或点下载</p>
+      <div class="row"><a class="btn hue" id="dlBtn" download="dawgy.png">下载海报</a><button type="button" class="btn ghost" id="closeModal">关闭</button></div>
+    </div>
+    <div class="toast" id="toast" role="status" aria-live="polite" aria-atomic="true"></div>
+  </div>
+</div>
+
+<script>
+/*IMGDATA*/
+/*DATA*/
+/*APP*/
+</script>
+</body>
+</html>
