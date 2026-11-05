@@ -73,3 +73,7 @@ button.res-dog{background:none;border:0;padding:0;font:inherit;color:inherit;dis
 
 .tested-count{margin-top:10px;font-size:12.5px;line-height:1.6;color:var(--ink3);text-align:center}
 .tested-count b{color:var(--ink2,var(--ink3));font-weight:800;font-variant-numeric:tabular-nums}
+
+.pose-hint{display:table;margin:4px auto 0;padding:3px 10px;border-radius:999px;font-size:12px;color:var(--ink3);background:rgba(0,0,0,.05);animation:poseHint 2.4s ease-in-out infinite}
+@keyframes poseHint{0%,100%{transform:translateY(0);opacity:.75}50%{transform:translateY(-2px);opacity:1}}
+@media (prefers-reduced-motion:reduce){.pose-hint{animation:none}}

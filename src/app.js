@@ -194,13 +194,20 @@ function relCard(kind,cls,r){
 /* ---------- 结果页主图：3 个姿势，点一下换（默认先看第三个姿势） ---------- */
 let heroPose=2;
 function setHero(p,anim){
-  const key=view.k,b=DOGS[key];heroPose=p;view.pose=p;
+  const key=view.k,b=DOGS[key];heroPose=p;view.pose=p;heroAcc=0;
   $("#resDog").innerHTML=dogImg(key,"",b.n+"："+b.poses[p],p);
   $("#poseCap").textContent=b.poses[p];
   $("#poseDots").innerHTML=[0,1,2].map(i=>`<i class="${i===p?"on":""}"></i>`).join("");
   if(anim){const s=$("#resDog");s.classList.remove("swap");void s.offsetWidth;s.classList.add("swap");}
 }
 $("#resDog").onclick=()=>{if(view)setHero((heroPose+1)%NP,true);};
+/* 每 10 秒自动换一个姿势；页面隐藏/海报弹窗打开时暂停，离开结果页清零 */
+let heroAcc=0;
+setInterval(()=>{
+  if(!view||!screens.result||!screens.result.classList.contains("active")){heroAcc=0;return;}
+  if(document.hidden||modalOpen)return;
+  heroAcc+=500;if(heroAcc>=10000)setHero((heroPose+1)%NP,true);
+},500);
 
 /* ---------- 结果页（三种模式：我的 / 图鉴里的狗 / 朋友分享） ---------- */
 function showResult(vw){
