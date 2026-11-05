@@ -190,6 +190,10 @@ button.res-dog{background:none;border:0;padding:0;font:inherit;color:inherit;dis
 .tested-count{margin-top:10px;font-size:12.5px;line-height:1.6;color:var(--ink3);text-align:center}
 .tested-count b{color:var(--ink2,var(--ink3));font-weight:800;font-variant-numeric:tabular-nums}
 
+.pose-hint{display:table;margin:4px auto 0;padding:3px 10px;border-radius:999px;font-size:12px;color:var(--ink3);background:rgba(0,0,0,.05);animation:poseHint 2.4s ease-in-out infinite}
+@keyframes poseHint{0%,100%{transform:translateY(0);opacity:.75}50%{transform:translateY(-2px);opacity:1}}
+@media (prefers-reduced-motion:reduce){.pose-hint{animation:none}}
+
 @keyframes pop{0%{transform:scale(.6) rotate(-8deg);opacity:0}100%{transform:scale(1) rotate(0);opacity:1}}
 @keyframes rise{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
 @media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}.screen{transition:none}}
@@ -233,6 +237,7 @@ button.res-dog{background:none;border:0;padding:0;font:inherit;color:inherit;dis
         <button type="button" class="res-dog" id="resDog" aria-label="换个姿势看看"></button>
         <div class="pose-cap" id="poseCap" aria-live="polite"></div>
         <div class="pose-dots" id="poseDots" aria-hidden="true"></div>
+        <div class="pose-hint" aria-hidden="true">戳我换一个</div>
         <div class="res-label" id="resLabel">你的狗狗人格是</div>
         <h1 class="res-name" id="resName" tabindex="-1" style="margin:6px 0 0"></h1>
         <div class="res-en" id="resEn"></div>
@@ -727,13 +732,20 @@ function relCard(kind,cls,r){
 /* ---------- 结果页主图：3 个姿势，点一下换（默认先看第三个姿势） ---------- */
 let heroPose=2;
 function setHero(p,anim){
-  const key=view.k,b=DOGS[key];heroPose=p;view.pose=p;
+  const key=view.k,b=DOGS[key];heroPose=p;view.pose=p;heroAcc=0;
   $("#resDog").innerHTML=dogImg(key,"",b.n+"："+b.poses[p],p);
   $("#poseCap").textContent=b.poses[p];
   $("#poseDots").innerHTML=[0,1,2].map(i=>`<i class="${i===p?"on":""}"></i>`).join("");
   if(anim){const s=$("#resDog");s.classList.remove("swap");void s.offsetWidth;s.classList.add("swap");}
 }
 $("#resDog").onclick=()=>{if(view)setHero((heroPose+1)%NP,true);};
+/* 每 10 秒自动换一个姿势；页面隐藏/海报弹窗打开时暂停，离开结果页清零 */
+let heroAcc=0;
+setInterval(()=>{
+  if(!view||!screens.result||!screens.result.classList.contains("active")){heroAcc=0;return;}
+  if(document.hidden||modalOpen)return;
+  heroAcc+=500;if(heroAcc>=10000)setHero((heroPose+1)%NP,true);
+},500);
 
 /* ---------- 结果页（三种模式：我的 / 图鉴里的狗 / 朋友分享） ---------- */
 function showResult(vw){
