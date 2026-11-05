@@ -11,7 +11,7 @@ async function page(_unused,w=390,h=844){
   const p=await br.newPage();await p.setViewport({width:w,height:h,deviceScaleFactor:2});
   p.on('pageerror',e=>errs.push(String(e)));p.on('console',m=>{if(m.type()==='error'&&!/ERR_FAILED|Failed to load resource/.test(m.text()))errs.push(m.text());});
   await p.setRequestInterception(true);
-  p.on('request',r=>{if(!/^(file|blob|data|about):/.test(r.url())&&!/^https:\/\/abacus\.jasoncameron\.dev\//.test(r.url()))netReqs.push(r.url());r.continue();});  // 只放行访客计数器（file:// 下其实也不会发）
+  p.on('request',r=>{if(!/^(file|blob|data|about):/.test(r.url())&&!/^https:\/\/dawgy-counter\.waynepi69\.workers\.dev\//.test(r.url()))netReqs.push(r.url());r.continue();});  // 只放行访客计数器（file:// 下其实也不会发）
   await p.goto(URL);return p;
 }
 async function takeQuiz(p,key){

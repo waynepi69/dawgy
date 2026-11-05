@@ -1,4 +1,4 @@
-// 计数器测试：本地起 http 服务，拦截并伪造 abacus 的响应，不会碰线上真实计数
+// 计数器测试：本地起 http 服务，拦截并伪造 dawgy-counter worker 的响应，不会碰线上真实计数
 const puppeteer=require('puppeteer-core'),http=require('http'),fs=require('fs');
 const html=fs.readFileSync('/workspace/dawgy/index.html');
 const srv=http.createServer((q,r)=>{r.setHeader('content-type','text/html;charset=utf8');r.end(html);}).listen(0);
@@ -13,12 +13,13 @@ async function mk(mode,state){
   p.on('pageerror',e=>errs.push(String(e)));
   await p.setRequestInterception(true);
   p.on('request',r=>{const u=r.url();
-    if(/abacus\.jasoncameron\.dev/.test(u)){calls.push(u.replace('https://abacus.jasoncameron.dev/',''));
+    if(/dawgy-counter\.waynepi69\.workers\.dev/.test(u)){const op=new globalThis.URL(u).pathname.slice(1);calls.push(op+':'+r.method());
+      if(r.method()==='OPTIONS')return r.respond({status:204,headers:{'access-control-allow-origin':'*','access-control-allow-methods':'GET,POST,OPTIONS'}});
       if(mode==='fail')return r.abort();
       if(mode==='hang')return;                       // 永不返回
       if(mode==='500')return r.respond({status:500,body:'x'});
-      const op=u.split('/')[3];if(op==='hit')state.n++;
-      return r.respond({status:200,contentType:'application/json',headers:{'access-control-allow-origin':'*'},body:JSON.stringify({value:state.n})});}
+      if(op==='hit'&&r.method()==='POST')state.n++;
+      return r.respond({status:200,contentType:'application/json',headers:{'access-control-allow-origin':'*'},body:JSON.stringify({count:state.n})});}
     if(!u.startsWith(URL)&&!/^(data|blob|about):/.test(u))other.push(u);
     r.continue();});
   await p.goto(URL);return p;
@@ -40,7 +41,7 @@ const txt=(p,s)=>p.$eval(s,e=>e.hidden?'':e.textContent);
  ok(await txt(p,'#resTested')==='已有 42 人测试过','saved result shows count');
  await p.click('#againBtn');await quiz(p);await sleep(500);
  ok(st.n===42,'second completion in same browser does not increment, n='+st.n);
- ok(p.__calls.filter(c=>c.startsWith('hit/')).length===1,'exactly one hit call: '+JSON.stringify(p.__calls));
+ ok(p.__calls.filter(c=>c==='hit:POST').length===1,'exactly one hit call: '+JSON.stringify(p.__calls));
  ok(p.__other.length===0,'no other network: '+p.__other);ok(!p.__errs.length,'no errors '+p.__errs);
  await p.evaluate(()=>{const r=document.querySelector('#result');r.scrollTop=r.scrollHeight;});await sleep(300);
  await p.screenshot({path:'/workspace/dawgy/result_count.png'});
