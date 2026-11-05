@@ -151,9 +151,35 @@ function rank(v){
 }
 
 
+/* ---------- 「已有 N 人测试过」计数（abacus.jasoncameron.dev，免注册、允许跨域） ----------
+   只在每个浏览器第一次完成测试时 +1；看结果 / 刷新 / 再测一次都不会再加。
+   请求 4 秒超时，失败就把这一行藏起来，不影响任何其它功能。 */
+const CNT_API="https://abacus.jasoncameron.dev/",CNT_PATH="dawgy-waynepi69/tests",LS_COUNTED="dawgy:counted";
+let testedN=null;
+function renderTested(){
+  const txt=testedN>0?`已有 <b>${testedN.toLocaleString("en-US")}</b> 人测试过`:"";
+  ["#coverTested","#resTested"].forEach(s=>{const e=$(s);e.innerHTML=txt;e.hidden=!txt;});
+}
+async function cntCall(op){
+  if(!/^https?:/.test(location.protocol)||typeof fetch!=="function")return;   // 本地文件打开时不联网
+  const ac=typeof AbortController==="function"?new AbortController():null,tm=setTimeout(()=>ac&&ac.abort(),4000);
+  try{
+    const r=await Promise.race([fetch(CNT_API+op+"/"+CNT_PATH,{signal:ac&&ac.signal,cache:"no-store"}),new Promise((_,j)=>setTimeout(j,4500))]);
+    if(!r.ok)return false;const o=await r.json();
+    if(o&&Number.isFinite(o.value)){testedN=o.value;renderTested();return true;}
+  }catch(e){}finally{clearTimeout(tm);}
+  return false;
+}
+function loadTested(){cntCall("get");}
+async function countThisTest(){
+  if(store.get(LS_COUNTED))return loadTested();
+  if(await cntCall("hit"))store.set(LS_COUNTED,"1");
+}
+
 function finish(){
   const v=scoreAll(),r=rank(v);
   mine={k:r[0][0],v,s:r[1][0]};saveMine();store.del(LS_PROG);
+  countThisTest();
   go("me");
 }
 
@@ -345,4 +371,5 @@ document.addEventListener("keydown",e=>{
 mine=loadMine();
 route();
 // 测试钩子
+loadTested();
 window.__dawgy={DOGS,QUIZ,DIMS,REL,KEYS,IMG,rank,scoreVec,STRETCH,makePoster,go,state:()=>({idx,answers:answers.slice(),order,mine,view})};

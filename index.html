@@ -187,6 +187,9 @@ button.res-dog{background:none;border:0;padding:0;font:inherit;color:inherit;dis
 .meme b{display:block;font-size:14px;color:var(--ink)}
 .meme-note{margin-top:6px;font-size:11px;color:var(--ink3)}
 
+.tested-count{margin-top:10px;font-size:12.5px;line-height:1.6;color:var(--ink3);text-align:center}
+.tested-count b{color:var(--ink2,var(--ink3));font-weight:800;font-variant-numeric:tabular-nums}
+
 @keyframes pop{0%{transform:scale(.6) rotate(-8deg);opacity:0}100%{transform:scale(1) rotate(0);opacity:1}}
 @keyframes rise{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
 @media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}.screen{transition:none}}
@@ -205,7 +208,8 @@ button.res-dog{background:none;border:0;padding:0;font:inherit;color:inherit;dis
       <button type="button" class="btn" id="startBtn">开始测试</button>
       <button type="button" class="btn ghost small cover-last" id="lastBtn" hidden>查看上次结果</button>
       <div class="hint">24 道题 · 8 个维度 · 约 3 分钟 · 12 种小狗</div>
-      <div class="cover-count" id="coverCount">趣味测试，仅供娱乐，不是心理学测评。<br>纯本地运行，答案不会上传。</div>
+      <div class="cover-count" id="coverCount">趣味测试，仅供娱乐，不是心理学测评。<br>答案只在你的浏览器里计算，不会上传。</div>
+      <div class="tested-count" id="coverTested" hidden></div>
     </section>
 
     <section class="screen" id="quiz">
@@ -250,6 +254,7 @@ button.res-dog{background:none;border:0;padding:0;font:inherit;color:inherit;dis
         <div class="meme-box"><div class="meme-title">🏷️ 你的人设标签</div><div id="memeList"></div><div class="meme-note">人设标签来自近两年抖音等平台流行的网络用语，仅作趣味文字整理，不搬运任何视频。</div></div>
         <div class="warm" id="resWarm"></div>
         <div class="disclaimer">趣味测试，仅供娱乐，非科学 / 心理学测评。<br>百分比只代表你的选项倾向，不是对你的评判。</div>
+        <div class="tested-count" id="resTested" hidden></div>
       </div>
       <div class="actions">
         <div class="action-row">
@@ -679,9 +684,35 @@ function rank(v){
 }
 
 
+/* ---------- 「已有 N 人测试过」计数（abacus.jasoncameron.dev，免注册、允许跨域） ----------
+   只在每个浏览器第一次完成测试时 +1；看结果 / 刷新 / 再测一次都不会再加。
+   请求 4 秒超时，失败就把这一行藏起来，不影响任何其它功能。 */
+const CNT_API="https://abacus.jasoncameron.dev/",CNT_PATH="dawgy-waynepi69/tests",LS_COUNTED="dawgy:counted";
+let testedN=null;
+function renderTested(){
+  const txt=testedN>0?`已有 <b>${testedN.toLocaleString("en-US")}</b> 人测试过`:"";
+  ["#coverTested","#resTested"].forEach(s=>{const e=$(s);e.innerHTML=txt;e.hidden=!txt;});
+}
+async function cntCall(op){
+  if(!/^https?:/.test(location.protocol)||typeof fetch!=="function")return;   // 本地文件打开时不联网
+  const ac=typeof AbortController==="function"?new AbortController():null,tm=setTimeout(()=>ac&&ac.abort(),4000);
+  try{
+    const r=await Promise.race([fetch(CNT_API+op+"/"+CNT_PATH,{signal:ac&&ac.signal,cache:"no-store"}),new Promise((_,j)=>setTimeout(j,4500))]);
+    if(!r.ok)return false;const o=await r.json();
+    if(o&&Number.isFinite(o.value)){testedN=o.value;renderTested();return true;}
+  }catch(e){}finally{clearTimeout(tm);}
+  return false;
+}
+function loadTested(){cntCall("get");}
+async function countThisTest(){
+  if(store.get(LS_COUNTED))return loadTested();
+  if(await cntCall("hit"))store.set(LS_COUNTED,"1");
+}
+
 function finish(){
   const v=scoreAll(),r=rank(v);
   mine={k:r[0][0],v,s:r[1][0]};saveMine();store.del(LS_PROG);
+  countThisTest();
   go("me");
 }
 
@@ -873,6 +904,7 @@ document.addEventListener("keydown",e=>{
 mine=loadMine();
 route();
 // 测试钩子
+loadTested();
 window.__dawgy={DOGS,QUIZ,DIMS,REL,KEYS,IMG,rank,scoreVec,STRETCH,makePoster,go,state:()=>({idx,answers:answers.slice(),order,mine,view})};
 
 </script>
