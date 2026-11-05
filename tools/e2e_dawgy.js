@@ -139,7 +139,7 @@ console.log('results',JSON.stringify(res));
   await p.reload();await sleep(400);
   ok((await p.$eval('#resName',e=>e.textContent))===nm&&(await p.$$eval('.dim-fill',e=>e.map(x=>x.dataset.w).join()))===vec1,'reload keeps own result '+nm);
   const xs=await p.$$eval('#chart .dim-x',e=>e.map(x=>x.textContent));
-  ok(JSON.stringify(xs)===JSON.stringify(['精力有多旺','爱不爱社交','精明还是单纯','自己拿主意还是随大流','离不离得开人','有多爱吃','情绪和表现欲有多强','心里稳不稳']),'dimension explanations '+xs);
+  ok(JSON.stringify(xs)===JSON.stringify(['体力值','e狗禁止调戏i狗：（','精明还是单纯','自己拿主意还是随大流','离不离得开人','吃吃吃','豪度值（不是','心里稳不稳']),'dimension explanations '+xs);
   ok(/趣味测试/.test(await p.$eval('#result .disclaimer',e=>e.textContent)),'result disclaimer');
   await p.goto(URL);await sleep(300);
   ok(await p.$eval('#lastBtn',e=>!e.hidden),'cover has 查看上次结果');

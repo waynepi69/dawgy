@@ -43,7 +43,8 @@ button.stage{background:none;border:0;padding:0;font:inherit;color:inherit;displ
 .dim-head b{font-size:14px;font-weight:700;color:var(--ink);flex:0 0 auto}
 .dim-head .dim-x{flex:1;font-size:12px;color:var(--ink2);min-width:0}
 .dim-head em{font-style:normal;font-size:13px;font-weight:700;color:var(--ink);flex:0 0 auto}
-.dim-ends{display:flex;justify-content:space-between;font-size:11px;color:var(--ink2);margin-top:4px}
+.dim-ends{display:flex;justify-content:space-between;gap:10px;font-size:11px;color:var(--ink2);margin-top:4px}
+.dim-ends span{min-width:0;overflow-wrap:anywhere}.dim-ends span:last-child{text-align:right}
 /* 图鉴 */
 button.g-card{appearance:none;font:inherit;color:inherit;width:100%}
 .g-card .g-name,.g-card .g-tag{display:block}
