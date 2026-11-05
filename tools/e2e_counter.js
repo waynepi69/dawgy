@@ -42,9 +42,8 @@ const txt=(p,s)=>p.$eval(s,e=>e.hidden?'':e.textContent);
  ok(st.n===42,'second completion in same browser does not increment, n='+st.n);
  ok(p.__calls.filter(c=>c.startsWith('hit/')).length===1,'exactly one hit call: '+JSON.stringify(p.__calls));
  ok(p.__other.length===0,'no other network: '+p.__other);ok(!p.__errs.length,'no errors '+p.__errs);
- await p.screenshot({path:'/workspace/dawgy/_c.png'});
- await p.evaluate(()=>window.scrollTo(0,document.body.scrollHeight));
- await p.screenshot({path:'/workspace/dawgy/result_count.png',fullPage:true});
+ await p.evaluate(()=>{const r=document.querySelector('#result');r.scrollTop=r.scrollHeight;});await sleep(300);
+ await p.screenshot({path:'/workspace/dawgy/result_count.png'});
  await p.close();}
 // 2 失败 / 超时 / 500：隐藏，页面照常，下次还会重试
 for(const m of ['fail','500','hang']){const st={n:5};const p=await mk(m,st);await sleep(300);
